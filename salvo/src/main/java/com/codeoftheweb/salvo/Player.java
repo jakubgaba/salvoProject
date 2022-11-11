@@ -2,11 +2,9 @@ package com.codeoftheweb.salvo;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
+import javax.persistence.*;
+import java.util.Set;
+import java.util.HashSet;
 @Entity  //The annotation @Entity tells Spring to create a person table for this class.
 public class Player {
 
@@ -32,6 +30,14 @@ public class Player {
 
     public Player(String name){
         this.userName = name;
+    }
+
+    @OneToMany(mappedBy="players")
+    private Set<GamePlayer> gamePlayers = new HashSet<GamePlayer>();
+
+    public void addGamePlayers(GamePlayer gamePlayer) {
+        gamePlayer.setPlayers(this);
+        gamePlayers.add(gamePlayer);
     }
 
     public String getUserName() {
