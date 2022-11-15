@@ -40,6 +40,14 @@ public class Player {
         gamePlayers.add(gamePlayer);
     }
 
+    public Set<GamePlayer> getGamePlayers() {
+        return gamePlayers;
+    }
+
+    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
+        this.gamePlayers = gamePlayers;
+    }
+
     public String getUserName() {
         return userName;
     }

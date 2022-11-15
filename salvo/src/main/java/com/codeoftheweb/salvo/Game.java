@@ -31,6 +31,14 @@ public class Game {
         gamePlayers.add(gamePlayer);
     }
 
+    public Set<GamePlayer> getGamePlayers() {
+        return gamePlayers;
+    }
+
+    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
+        this.gamePlayers = gamePlayers;
+    }
+
     public void setGameCreated(String gameCreated) {
         this.gameCreated = gameCreated;
     }

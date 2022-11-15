@@ -19,9 +19,32 @@ public class SalvoApplication {
 	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd --- HH:mm:ss");
 	LocalDateTime now = LocalDateTime.now();
 	@Bean
-	public CommandLineRunner initData(GamePlayerRepository repository){
+	public CommandLineRunner initData(GamePlayerRepository gamePlayerRepo, GameRepository gameRep, PlayerRepository playerRep){
+
 		return(args) -> {
-			repository.save(new GamePlayer());
+			Player player1 = new Player("Julio");
+			Player player2 = new Player("Paul");
+			Player player3 = new Player("Robert");
+
+			Game game1 = new Game(dtf.format(now));
+			Game game2 = new Game(dtf.format(now.plus(1, ChronoUnit.HOURS)));
+			Game game3 = new Game(dtf.format(now.plus(2, ChronoUnit.HOURS)));
+
+			GamePlayer gamePlayer1 = new GamePlayer(game1,player1);
+			GamePlayer gamePlayer2 = new GamePlayer(game2,player2);
+			GamePlayer gamePlayer3 = new GamePlayer(game3,player3);
+
+			playerRep.save(player1);
+			playerRep.save(player2);
+			playerRep.save(player3);
+
+			gameRep.save(game1);
+			gameRep.save(game2);
+			gameRep.save(game3);
+
+			gamePlayerRepo.save(gamePlayer1);
+			gamePlayerRepo.save(gamePlayer2);
+			gamePlayerRepo.save(gamePlayer3);
 			//save
 //			repository.save(new Game(dtf.format(now)));
 //			repository.save(new Game(dtf.format(now.plus(1, ChronoUnit.HOURS))));
