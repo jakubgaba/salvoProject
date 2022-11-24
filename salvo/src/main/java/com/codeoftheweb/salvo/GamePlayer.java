@@ -25,7 +25,7 @@ public class GamePlayer {
     public GamePlayer(){}
 
     public GamePlayer(Game game, Player player){
-//        this.gameCreation = gameDate;
+//      this.gameCreation = gameDate;
         this.games = game;
         this.players = player;
     }

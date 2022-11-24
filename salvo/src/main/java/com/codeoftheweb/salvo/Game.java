@@ -23,6 +23,14 @@ public class Game {
         return gameCreated;
     }
 
+    public Set<GamePlayer> getGamePlayers() {
+        return gamePlayers;
+    }
+
+    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
+        this.gamePlayers = gamePlayers;
+    }
+
     @OneToMany(mappedBy="games")
     private Set<GamePlayer> gamePlayers = new HashSet<GamePlayer>();
 
@@ -31,12 +39,12 @@ public class Game {
         gamePlayers.add(gamePlayer);
     }
 
-    public Set<GamePlayer> getGamePlayers() {
-        return gamePlayers;
+    public long getGameId() {
+        return gameId;
     }
 
-    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
-        this.gamePlayers = gamePlayers;
+    public void setGameId(long gameId) {
+        this.gameId = gameId;
     }
 
     public void setGameCreated(String gameCreated) {

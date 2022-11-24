@@ -52,6 +52,14 @@ public class Player {
         return userName;
     }
 
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
