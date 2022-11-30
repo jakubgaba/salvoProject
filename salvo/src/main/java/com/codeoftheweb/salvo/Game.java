@@ -16,6 +16,7 @@ public class Game {
 
     public Game(){}
     public Game(String game){
+
         this.gameCreated= game;
     }
 

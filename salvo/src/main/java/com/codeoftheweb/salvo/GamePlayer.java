@@ -22,21 +22,18 @@ public class GamePlayer {
     @JoinColumn(name="player_id")
     private Player players;
 
+    @ManyToOne
+    @JoinColumn(name="ship_id")
+    private Ship ships;
+
     public GamePlayer(){}
 
-    public GamePlayer(Game game, Player player){
-//      this.gameCreation = gameDate;
+    public GamePlayer(Game game, Player player, Ship ship){
         this.games = game;
         this.players = player;
+        this.ships = ship;
     }
 
-//    public String getGameCreation() {
-//        return gameCreation;
-//    }
-//
-//    public void setGameCreation(String gameCreation) {
-//        this.gameCreation = gameCreation;
-//    }
 
     public Game getGames() {
         return games;
@@ -61,6 +58,18 @@ public class GamePlayer {
     public void setGamePlayerId(long gamePlayerId) {
         this.gamePlayerId = gamePlayerId;
     }
+
+    public Ship getShips() {
+        return ships;
+    }
+
+    public void setShips(Ship ships) {
+        this.ships = ships;
+    }
+
+   public void addShip(Ship newShip){
+        newShip.addShip(this);
+   }
 
     @Override
     public String toString() {
