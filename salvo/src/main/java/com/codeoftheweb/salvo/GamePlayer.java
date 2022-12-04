@@ -3,6 +3,7 @@ package com.codeoftheweb.salvo;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class GamePlayer {
@@ -22,16 +23,13 @@ public class GamePlayer {
     @JoinColumn(name="player_id")
     private Player players;
 
-    @ManyToOne
-    @JoinColumn(name="ship_id")
-    private Ship ships;
+    @OneToMany(mappedBy = "gamePlayer")
+    private List<Ship> ships;
 
     public GamePlayer(){}
-
-    public GamePlayer(Game game, Player player, Ship ship){
+    public GamePlayer(Game game, Player player){
         this.games = game;
         this.players = player;
-        this.ships = ship;
     }
 
 
@@ -59,17 +57,15 @@ public class GamePlayer {
         this.gamePlayerId = gamePlayerId;
     }
 
-    public Ship getShips() {
+    public List<Ship> getShips() {
         return ships;
     }
 
-    public void setShips(Ship ships) {
+    public void setShips(List<Ship> ships) {
         this.ships = ships;
     }
 
-   public void addShip(Ship newShip){
-        newShip.addShip(this);
-   }
+
 
     @Override
     public String toString() {

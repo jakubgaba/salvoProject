@@ -17,19 +17,18 @@ public class Ship {
 
     private String shipType;
 
-    @OneToMany(mappedBy="ships")
-    private Set<GamePlayer> gamePlayers = new HashSet<GamePlayer>();
+    @ManyToOne
+    @JoinColumn(name = "gamePlayer")
+    private GamePlayer gamePlayer;
 
-    public void addShip(GamePlayer gamePlayer){
-        gamePlayer.setShips(this);
-        gamePlayers.add(gamePlayer);
-    }
 
     public Ship(){}
 
-    public Ship(String shipType){
+    public Ship(String shipType, GamePlayer gamePlayer){
         this.shipType = shipType;
+        this.gamePlayer = gamePlayer;
     }
+
 
     public long getShipId() {
         return shipId;
@@ -47,12 +46,12 @@ public class Ship {
         this.shipType = shipType;
     }
 
-    public Set<GamePlayer> getGamePlayers() {
-        return gamePlayers;
+    public GamePlayer getGamePlayer() {
+        return gamePlayer;
     }
 
-    public void setGamePlayers(Set<GamePlayer> gamePlayers) {
-        this.gamePlayers = gamePlayers;
+    public void setGamePlayer(GamePlayer gamePlayers) {
+        this.gamePlayer = gamePlayers;
     }
 
     @Override
@@ -60,7 +59,7 @@ public class Ship {
         return "Ship{" +
                 "shipId=" + shipId +
                 ", shipType='" + shipType + '\'' +
-                ", gamePlayers=" + gamePlayers +
+                ", gamePlayers=" + gamePlayer +
                 '}';
     }
 }
