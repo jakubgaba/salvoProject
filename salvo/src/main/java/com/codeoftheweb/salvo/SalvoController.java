@@ -51,17 +51,10 @@ public List<Object> gamePlayersById(Set<GamePlayer> mapGame){
 
     public Map<String, Object> getGamePlayerById(GamePlayer gamePlayerEach){
         Map<String, Object> mapping = new LinkedHashMap<>();
-        mapping.put("IDontWantItHere", getPlayerById(gamePlayerEach.getPlayers()));
+        mapping.put("Id", gamePlayerEach.getPlayers().getUserId());
+        mapping.put("Player", gamePlayerEach.getPlayers().getUserName());
         return mapping;
     }
-    public Map<String, Object> getPlayerById(Player player){
-        Map<String, Object> mapping = new LinkedHashMap<>();
-        mapping.put("id", player.getUserId());
-        mapping.put("player", player.getUserName());
-        return
-                mapping;
-    }
-
     public List<Object> gameShipsById(Set<Ship> mapShip){
         return mapShip
                 .stream().map(this::getShipById).collect(Collectors.toList());
