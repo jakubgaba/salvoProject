@@ -1,5 +1,7 @@
 package com.codeoftheweb.salvo;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -24,9 +26,11 @@ public class Game {
         return gameCreated;
     }
 
+    @JsonIgnore
     public Set<GamePlayer> getGamePlayers() {
         return gamePlayers;
     }
+
 
     public void setGamePlayers(Set<GamePlayer> gamePlayers) {
         this.gamePlayers = gamePlayers;
@@ -35,10 +39,6 @@ public class Game {
     @OneToMany(mappedBy="games")
     private Set<GamePlayer> gamePlayers = new HashSet<GamePlayer>();
 
-    public void addGamePlayers(GamePlayer gamePlayer) {
-        gamePlayer.setGames(this);
-        gamePlayers.add(gamePlayer);
-    }
 
     public long getGameId() {
         return gameId;

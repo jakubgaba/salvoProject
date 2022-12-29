@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class GamePlayer {
@@ -24,7 +25,7 @@ public class GamePlayer {
     private Player players;
 
     @OneToMany(mappedBy = "gamePlayer")
-    private List<Ship> ships;
+    private Set<Ship> ships;
 
     public GamePlayer(){}
     public GamePlayer(Game game, Player player){
@@ -57,11 +58,11 @@ public class GamePlayer {
         this.gamePlayerId = gamePlayerId;
     }
 
-    public List<Ship> getShips() {
+    public Set<Ship> getShips() {
         return ships;
     }
 
-    public void setShips(List<Ship> ships) {
+    public void setShips(Set<Ship> ships) {
         this.ships = ships;
     }
 
