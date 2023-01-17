@@ -53,6 +53,7 @@ public List<Object> gamePlayersById(Set<GamePlayer> mapGame){
         Map<String, Object> mapping = new LinkedHashMap<>();
         mapping.put("Id", gamePlayerEach.getPlayers().getUserId());
         mapping.put("Player", gamePlayerEach.getPlayers().getUserName());
+        mapping.put("WhatGPAmI", gamePlayerEach.getGamePlayerId());
         return mapping;
     }
     public List<Object> gameShipsById(Set<Ship> mapShip){

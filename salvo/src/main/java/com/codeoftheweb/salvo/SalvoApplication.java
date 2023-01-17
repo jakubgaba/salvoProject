@@ -28,54 +28,80 @@ public class SalvoApplication {
 			Player player1 = new Player("Julio");
 			Player player2 = new Player("Paul");
 			Player player3 = new Player("Robert");
-            Player playervs1 = new Player("Ronaldo");
+            Player player4 = new Player("Ronaldo");
 
 			Game game1 = new Game(dtf.format(now));
 			Game game2 = new Game(dtf.format(now.plus(1, ChronoUnit.HOURS)));
 			Game game3 = new Game(dtf.format(now.plus(2, ChronoUnit.HOURS)));
 
 			GamePlayer gamePlayer1 = new GamePlayer(game1,player1);
-			GamePlayer gamePlayervs1 = new GamePlayer(game1,playervs1);
+			GamePlayer gamePlayer4 = new GamePlayer(game1,player4);
 			GamePlayer gamePlayer2 = new GamePlayer(game2,player2);
 			GamePlayer gamePlayer3 = new GamePlayer(game3,player3);
 
 			playerRep.save(player1);
 			playerRep.save(player2);
 			playerRep.save(player3);
-			playerRep.save(playervs1);
+			playerRep.save(player4);
 
 			gameRep.save(game1);
 			gameRep.save(game2);
 			gameRep.save(game3);
 
 			gamePlayerRepo.save(gamePlayer1);
-			gamePlayerRepo.save(gamePlayervs1);
+			gamePlayerRepo.save(gamePlayer4);
 			gamePlayerRepo.save(gamePlayer2);
 			gamePlayerRepo.save(gamePlayer3);
 
-			List<String> locationShip1 = new ArrayList<>();
-			locationShip1.add("H2");
-			locationShip1.add("H3");
-			locationShip1.add("H4");
-			List<String> locationShipToGo = new ArrayList<>();
-			locationShipToGo.add("E1");
-			locationShipToGo.add("F1");
-			locationShipToGo.add("G1");
+			List<String> locationShipCruiser = new ArrayList<>();
+			locationShipCruiser.add("D8");
+			locationShipCruiser.add("E8");
+			locationShipCruiser.add("F8");
+
+
+			List<String> locationShipHappy = new ArrayList<>();
+			locationShipHappy.add("E1");
+			locationShipHappy.add("F1");
+
+			List<String> locationShipHappy2 = new ArrayList<>();
+			locationShipHappy2.add("E2");
+			locationShipHappy2.add("E3");
+
 			List<String> locationJackShip = new ArrayList<>();
 			locationJackShip.add("B4");
 			locationJackShip.add("B5");
+			locationJackShip.add("B6");
+			locationJackShip.add("B7");
 
-			Ship ship1 = new Ship("Cruiser", gamePlayer1, locationShip1);
-			Ship shipToGo = new Ship("Happy Ship", gamePlayer1, locationShipToGo);
-			Ship jackShip = new Ship("Jack Sparrow ship", gamePlayer1, locationJackShip);
-			Ship ship2 = new Ship("BadShip", gamePlayer2, locationShip1);
-			Ship shipToGo2 = new Ship("JackSparrowShip", gamePlayer2, locationShipToGo);
+			List<String> locationBraveShip = new ArrayList<>();
+			locationBraveShip.add("F4");
+			locationBraveShip.add("F5");
+			locationBraveShip.add("F6");
+			locationBraveShip.add("F7");
 
-			shipRep.save(ship1);
-			shipRep.save(shipToGo);
-			shipRep.save(ship2);
-			shipRep.save(shipToGo2);
-			shipRep.save(jackShip);
+
+			Ship shipCruiser = new Ship("Cruiser", gamePlayer1, locationShipCruiser);
+			Ship shipHappy = new Ship("Happy", gamePlayer1, locationShipHappy);
+			Ship shipHappy2 = new Ship("Happy", gamePlayer1, locationShipHappy2);
+			Ship shipThree = new Ship("Jack Sparrow", gamePlayer1, locationJackShip);
+
+			Ship shipJack = new Ship("Jack Sparrow", gamePlayer4, locationJackShip);
+			Ship shipCaptain = new Ship("Brave", gamePlayer4, locationBraveShip);
+
+			Ship shipToTest = new Ship("Cruiser", gamePlayer2, locationShipCruiser);
+
+			Ship shipToTest2 = new Ship("Cruiser", gamePlayer3, locationShipCruiser);
+
+			shipRep.save(shipCruiser);
+			shipRep.save(shipHappy);
+			shipRep.save(shipHappy2);
+			shipRep.save(shipThree);
+
+			shipRep.save(shipJack);
+			shipRep.save(shipCaptain);
+
+			shipRep.save(shipToTest);
+			shipRep.save(shipToTest2);
 
 
 
