@@ -22,7 +22,7 @@ public class Ship {
     @ElementCollection(targetClass= String.class)
     private List<String> shipLocation;
     @ManyToOne
-    @JoinColumn(name = "gamePlayer")
+    @JoinColumn(name="gamePlayer")
     private GamePlayer gamePlayer;
 
 

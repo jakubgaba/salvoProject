@@ -24,6 +24,9 @@ public class GamePlayer {
     @JoinColumn(name="player_id")
     private Player players;
 
+    @OneToMany(mappedBy = "gamePlayerSalvo")
+    private Set<Salvo> salvos;
+
     @OneToMany(mappedBy = "gamePlayer")
     private Set<Ship> ships;
 
@@ -66,15 +69,22 @@ public class GamePlayer {
         this.ships = ships;
     }
 
+    public Set<Salvo> getSalvos() {
+        return salvos;
+    }
 
+    public void setSalvos(Set<Salvo> salvos) {
+        this.salvos = salvos;
+    }
 
     @Override
     public String toString() {
         return "GamePlayer{" +
                 "gamePlayerId=" + gamePlayerId +
-//                ", gameCreation='" + gameCreation + '\'' +
                 ", games=" + games +
                 ", players=" + players +
+                ", salvos=" + salvos +
+                ", ships=" + ships +
                 '}';
     }
 }

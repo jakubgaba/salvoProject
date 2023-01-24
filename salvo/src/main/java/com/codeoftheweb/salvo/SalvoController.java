@@ -21,6 +21,9 @@ public class SalvoController {
     @Autowired
     private PlayerRepository playerRepository;
 
+    @Autowired
+    private SalvoRepository salvoRepository;
+
     @RequestMapping("/games")
     public List<Object> getGames() {
         return gameRepository.findAll()
@@ -33,6 +36,8 @@ public class SalvoController {
                 gameViewHelpMethod(GPId);
     }
 
+
+
    public Map<String, Object> gameViewHelpMethod(Long GPId){
        Map<String, Object> oneGamePlayer = new LinkedHashMap<>();
        oneGamePlayer.put("gameId", gamePlayerRepository.findById(GPId).get().getGames().getGameId());
@@ -40,6 +45,7 @@ public class SalvoController {
        oneGamePlayer.put("created", gamePlayerRepository.findById(GPId).get().getGames().getGameCreated());
        oneGamePlayer.put("gamePlayers", gamePlayersById(gamePlayerRepository.findById(GPId).get().getGames().getGamePlayers()));
        oneGamePlayer.put("ships", gameShipsById(gamePlayerRepository.findById(GPId).get().getShips()));
+       oneGamePlayer.put("salvoes", salvoRepository.findById(GPId).get().getSalvoLocation());
        return oneGamePlayer;
    }
 
@@ -53,7 +59,6 @@ public List<Object> gamePlayersById(Set<GamePlayer> mapGame){
         Map<String, Object> mapping = new LinkedHashMap<>();
         mapping.put("Id", gamePlayerEach.getPlayers().getUserId());
         mapping.put("Player", gamePlayerEach.getPlayers().getUserName());
-        mapping.put("WhatGPAmI", gamePlayerEach.getGamePlayerId());
         return mapping;
     }
     public List<Object> gameShipsById(Set<Ship> mapShip){
