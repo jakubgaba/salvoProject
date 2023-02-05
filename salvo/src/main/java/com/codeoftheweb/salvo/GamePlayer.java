@@ -14,28 +14,25 @@ public class GamePlayer {
     @GenericGenerator(name = "native", strategy = "native")
     private long gamePlayerId;
 
-//    private String gameCreation;
-
     @ManyToOne
     @JoinColumn(name="game_id")
-    private Game games;
+    private Game games; //Many GamePlayer entities are associated with one Game entity.
 
     @ManyToOne
     @JoinColumn(name="player_id")
-    private Player players;
+    private Player players; //Many GamePlayer entities are associated with one Player entity.
 
     @OneToMany(mappedBy = "gamePlayerSalvo")
-    private Set<Salvo> salvos;
+    private Set<Salvo> salvos; //One GamePlayer entity can have many Salvo entities associated with it.
 
     @OneToMany(mappedBy = "gamePlayer")
-    private Set<Ship> ships;
+    private Set<Ship> ships; //One GamePlayer entity can have many Ship entities associated with it.
 
     public GamePlayer(){}
     public GamePlayer(Game game, Player player){
         this.games = game;
         this.players = player;
     }
-
 
     public Game getGames() {
         return games;
