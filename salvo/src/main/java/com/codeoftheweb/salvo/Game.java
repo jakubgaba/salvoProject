@@ -50,6 +50,18 @@ public class Game {
     @OneToMany(mappedBy="games")
     private Set<GamePlayer> gamePlayers = new HashSet<GamePlayer>();
 
+    @OneToMany(mappedBy = "gameScore")
+    private Set<Score> scoresGame = new HashSet<>();
+
+    @JsonIgnore
+    public Set<Score> getScoresGame() {
+        return scoresGame;
+    }
+
+    public void setScoresGame(Set<Score> scoresGame) {
+        this.scoresGame = scoresGame;
+    }
+
     //Getter for the gameId field
     public long getGameId() {
         return gameId;

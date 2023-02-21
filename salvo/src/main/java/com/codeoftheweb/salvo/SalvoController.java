@@ -24,6 +24,9 @@ public class SalvoController {
     @Autowired
     private SalvoRepository salvoRepository;
 
+    @Autowired
+    private ScoreRepository scoreRepository;
+
     @RequestMapping("/games")
     public List<Object> getGames() {
         return gameRepository.findAll().stream().map(this::getIndividualGameData).collect(Collectors.toList());
@@ -34,20 +37,43 @@ public class SalvoController {
         return getGameViewData(GPId);
     }
 
+
+
+
+    @RequestMapping("/leaderboard")
+    public Map<String, Object> getPlayerLeaders(){
+        List<Score> Scores = scoreRepository.findAll();
+        Map<String, Object> mapping = new LinkedHashMap<>();
+        // I create a Stream from Scores list then we can call sorted method to sort the scores ( It let us process elements in functional way )
+        // Comparator takes a F"unction" that will take a !! KEY !! for comparising and returns new Comparator that comapres objects based on the extracted KEY...
+        // .reversed() because descending order.
+        // .thenComparing takes secondary ! KEY ! when the two object have the same value for the primary key
+        // and DONE ! :-}
+
+        List<Score> sortedScores = Scores.stream()
+                .sorted(Comparator.comparing(Score::getScore).reversed()
+                        .thenComparing(element -> element.getPlayerScore().getUserName()))
+                .collect(Collectors.toList());
+
+        mapping.put("Scores", sortedScores.stream().map(Score::getScore));
+        mapping.put("PlayersByScore", sortedScores.stream()
+                .map(element -> element.getPlayerScore().getUserName()));
+        return mapping;
+    }
+
+
     public Map<String, Object> getGameViewData(Long GPId){
         Map<String, Object> oneGamePlayer = new LinkedHashMap<>();
-
         GamePlayer gamePlayer = gamePlayerRepository.findById(GPId).get();
-
         oneGamePlayer.put("gameId", gamePlayer.getGames().getGameId());
         oneGamePlayer.put("gamePlayerId", gamePlayer.getGamePlayerId());
         oneGamePlayer.put("created", gamePlayer.getGames().getGameCreated());
         oneGamePlayer.put("gamePlayers", getGamePlayersData(gamePlayer.getGames().getGamePlayers(), GPId));
         oneGamePlayer.put("ships", getShipsData(gamePlayer.getShips()));
         oneGamePlayer.put("salvoes", salvoRepository.findById(GPId).get().getSalvoLocation());
-
-        return oneGamePlayer;
+    return oneGamePlayer;
     }
+
 
     public List<Object> getGamePlayersData(Set<GamePlayer> gamePlayers, Long GPId){
         return gamePlayers.stream().map(gamePlayer -> getIndividualGamePlayerData(gamePlayer, GPId)).collect(Collectors.toList());
@@ -57,12 +83,11 @@ public class SalvoController {
         Map<String, Object> mapping = new LinkedHashMap<>();
         mapping.put("Id", gamePlayer.getPlayers().getUserId());
         mapping.put("Player", gamePlayer.getPlayers().getUserName());
-
+        mapping.put("Score", gamePlayer.getPlayers().getScoresPlayer().stream().map(Score::getScore));
         if(gamePlayer.getPlayers().getUserId() != GPId){
             mapping.put("enemyShipLocations", gamePlayer.getShips().stream().map(Ship::getShipLocation));
             mapping.put("enemySalvoes", gamePlayer.getSalvos().stream().map(Salvo::getSalvoLocation));
         }
-
         return mapping;
     }
 

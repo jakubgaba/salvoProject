@@ -36,6 +36,10 @@ public class Player {
     @OneToMany(mappedBy="players")
     private Set<GamePlayer> gamePlayers = new HashSet<GamePlayer>();
 
+    @OneToMany(mappedBy = "playerScore")
+    private Set<Score> scoresPlayer = new HashSet<>();
+
+
     public void addGamePlayer(GamePlayer gamePlayer) {
         gamePlayer.setPlayers(this);
         gamePlayers.add(gamePlayer);
@@ -44,6 +48,14 @@ public class Player {
     @JsonIgnore
     public Set<GamePlayer> getGamePlayers() {
         return gamePlayers;
+    }
+    @JsonIgnore
+    public Set<Score> getScoresPlayer() {
+        return scoresPlayer;
+    }
+
+    public void setScoresPlayer(Set<Score> scoresPlayer) {
+        this.scoresPlayer = scoresPlayer;
     }
 
     public void setGamePlayers(Set<GamePlayer> gamePlayers) {
