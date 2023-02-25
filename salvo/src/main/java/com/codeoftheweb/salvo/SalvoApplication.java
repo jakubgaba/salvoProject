@@ -4,6 +4,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +16,7 @@ import java.util.*;
 
 
 @SpringBootApplication
+
 public class SalvoApplication {
 
 	public static void main(String[] args) {
@@ -23,7 +28,7 @@ public class SalvoApplication {
 	public CommandLineRunner initData(GamePlayerRepository gamePlayerRepo, GameRepository gameRep, PlayerRepository playerRep, ShipRepository shipRep, SalvoRepository salvoRep, ScoreRepository scoreRep){
 
 		return(args) -> {
-			Player player1 = new Player("Julio","123");
+			Player player1 = new Player("Julio", "123");
 			Player player2 = new Player("Paul","123");
 			Player player3 = new Player("Robert","123");
             Player player4 = new Player("Ronaldo","123");
@@ -378,6 +383,8 @@ public class SalvoApplication {
 			scoreRep.save(scoreGP7);
 			scoreRep.save(scoreGP8);
 		};
+
 	}
+
 
 }

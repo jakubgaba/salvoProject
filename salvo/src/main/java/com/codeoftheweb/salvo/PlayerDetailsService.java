@@ -16,7 +16,8 @@ public class PlayerDetailsService implements UserDetailsService {
     @Autowired
     private PlayerRepository playerRepository;
 
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Player player = playerRepository.findByUserName(username);
@@ -26,7 +27,7 @@ public class PlayerDetailsService implements UserDetailsService {
         System.out.println("Found player with username: " + player.getUserName() + " and password: " + player.getPassword());
         return User.builder()
                 .username(player.getUserName())
-                .password(player.getPassword())
+                .password(passwordEncoder.encode(player.getPassword()))
                 .roles("USER")
                 .build();
     }
