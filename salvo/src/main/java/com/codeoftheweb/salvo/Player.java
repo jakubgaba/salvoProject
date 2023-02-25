@@ -13,6 +13,7 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private long userId;
+    @Column(unique = true)
     private String userName;
     //The annotation @Id says that the id instance variable holds the database key for this class.
     //The @Id annotation says this field has a unique value for every instance of Person.
@@ -29,8 +30,9 @@ public class Player {
 
     public Player(){}
 
-    public Player(String name){
+    public Player(String name, String password){
         this.userName = name;
+        this.password = password;
     }
 
     @OneToMany(mappedBy="players")
@@ -39,10 +41,19 @@ public class Player {
     @OneToMany(mappedBy = "playerScore")
     private Set<Score> scoresPlayer = new HashSet<>();
 
+    private String password;
 
     public void addGamePlayer(GamePlayer gamePlayer) {
         gamePlayer.setPlayers(this);
         gamePlayers.add(gamePlayer);
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @JsonIgnore

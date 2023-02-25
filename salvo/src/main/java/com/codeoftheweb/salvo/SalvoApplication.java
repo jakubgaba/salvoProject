@@ -23,14 +23,14 @@ public class SalvoApplication {
 	public CommandLineRunner initData(GamePlayerRepository gamePlayerRepo, GameRepository gameRep, PlayerRepository playerRep, ShipRepository shipRep, SalvoRepository salvoRep, ScoreRepository scoreRep){
 
 		return(args) -> {
-			Player player1 = new Player("Julio");
-			Player player2 = new Player("Paul");
-			Player player3 = new Player("Robert");
-            Player player4 = new Player("Ronaldo");
-			Player player5 = new Player("Jakub");
-			Player player6 = new Player("Igor");
-			Player player7 = new Player("Yura");
-			Player player8 = new Player("Josef");
+			Player player1 = new Player("Julio","123");
+			Player player2 = new Player("Paul","123");
+			Player player3 = new Player("Robert","123");
+            Player player4 = new Player("Ronaldo","123");
+			Player player5 = new Player("Jakub","123");
+			Player player6 = new Player("Igor","123");
+			Player player7 = new Player("Yura","123");
+			Player player8 = new Player("Josef","123");
 
 			Game game1 = new Game(dtf.format(now));
 			Game game2 = new Game(dtf.format(now.plus(1, ChronoUnit.HOURS)));
