@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 @Entity  //The annotation @Entity tells Spring to create a person table for this class.
@@ -28,11 +29,21 @@ public class Player {
     //JPA will create column names based on the field names. You must avoid using names on this merged list of SQL reserved words.
     // There are different strategies for mapping names. Camelcase names, such as currentDate, might translate into current_date for SQL, which is a reserved word.
 
-    public Player(){}
 
-    public Player(String name, String password){
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "player_authorities",
+            joinColumns = @JoinColumn(name = "player_id"))
+    @Column(name = "authority")
+    private Set<String> authorities = new HashSet<>();
+
+    public Player(){
+
+    }
+
+    public Player(String name, String password, String auth){
         this.userName = name;
         this.password = password;
+        this.authorities.add(auth);
     }
 
     @OneToMany(mappedBy="players")
@@ -89,10 +100,27 @@ public class Player {
         this.userName = userName;
     }
 
+    public Set<String> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<String> authorities) {
+        this.authorities = authorities;
+    }
+
+    public boolean checkPassword(String password) {
+        return password != null && password.equals(this.password);
+    }
+
     @Override
     public String toString() {
         return "Player{" +
-                "userName='" + userName + '\'' +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", authorities=" + authorities +
+                ", gamePlayers=" + gamePlayers +
+                ", scoresPlayer=" + scoresPlayer +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

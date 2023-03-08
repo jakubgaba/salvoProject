@@ -1,13 +1,20 @@
 package com.codeoftheweb.salvo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 
 @Service
 public class PlayerDetailsService implements UserDetailsService {
@@ -18,17 +25,23 @@ public class PlayerDetailsService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+
+    private Collection<SimpleGrantedAuthority> getAuthorities(Set<String> roles) {
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        for (String role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
+        return authorities;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Player player = playerRepository.findByUserName(username);
-        if (player == null) {
+        if (player != null) {
+            return new User(player.getUserName(), passwordEncoder.encode(player.getPassword()), getAuthorities(player.getAuthorities()));
+        } else {
             throw new UsernameNotFoundException("User not found");
         }
-        System.out.println("Found player with username: " + player.getUserName() + " and password: " + player.getPassword());
-        return User.builder()
-                .username(player.getUserName())
-                .password(passwordEncoder.encode(player.getPassword()))
-                .roles("USER")
-                .build();
     }
 }
