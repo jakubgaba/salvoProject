@@ -75,7 +75,9 @@ public class SalvoController {
     public ResponseEntity<Map<String, String>> logout(HttpServletRequest request) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication);
+        if (authentication.getPrincipal().equals("anonymousUser")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "User is not logged in"));
+        }
         if (authentication != null && authentication.isAuthenticated()) {
             SecurityContextHolder.clearContext();
             HttpSession session = request.getSession(false);
