@@ -5,23 +5,20 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,9 +59,10 @@ public class SalvoController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect password");
                 }
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                request.getSession(true);
+                Long playerId = ((PlayerDetailsService.CustomUserDetails) userDetails).playerId;
+                request.getSession(true).setAttribute("playerId", playerId);
                 SecurityContextHolder.getContext().setAuthentication(token);
-                return ResponseEntity.ok("Authenticated");
+                return ResponseEntity.ok(playerId);
             } catch (AuthenticationException e) {
                 return ResponseEntity.badRequest().body("Invalid credentials");
             }
@@ -93,9 +91,67 @@ public class SalvoController {
         }
     }
 
+    @PostMapping("/game/{gameId}/players")
+    ResponseEntity<Object> joinGame(@PathVariable Long gameId, @RequestBody Map<String, Long> requestBody) {
+        try {
+            // Get the current user
+            System.out.println(gameId);
+            Long playerId = requestBody.get("playerId");
+            Player player = playerRepository.findById(playerId).orElse(null);
+            if (player == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be logged in to join a game.");
+            }
+
+            // Get the game with the given ID
+            Game game = gameRepository.findById(gameId).orElse(null);
+            if (game == null) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No such game.");
+            }
+
+            // Check if the game has only one player
+            if (game.getGamePlayers().size() >= 2) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Game is full.");
+            }
+
+            // Create and save a new game player
+            GamePlayer gamePlayer = new GamePlayer(game, player);
+            gamePlayerRepository.save(gamePlayer);
+
+            // Send a Created response with the new game player ID and game ID for some front end fun :D
+            Map<String, Long> responseMap = new HashMap<>();
+            responseMap.put("playerID", player.getUserId());
+            responseMap.put("gameID", gameId);
+            responseMap.put("gamePlayerID", gamePlayer.getGamePlayerId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseMap);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to join game.");
+        }
+    }
 
 
-    @RequestMapping("/games")
+
+    @PostMapping("/games")
+    public ResponseEntity<String> createGame(@RequestParam Long player) {
+        try {
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+            String gameCreated = now.format(formatter);
+            Player user = playerRepository.findById(player).orElse(null);
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+            Game game = new Game(gameCreated);
+            gameRepository.save(game);
+            GamePlayer gamePlayer = new GamePlayer(game, user);
+            gamePlayerRepository.save(gamePlayer);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Game created successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create game.");
+        }
+    }
+
+
+    @GetMapping("/games")
     public List<Object> getGames() {
         return gameRepository.findAll().stream().map(this::getIndividualGameData).collect(Collectors.toList());
     }

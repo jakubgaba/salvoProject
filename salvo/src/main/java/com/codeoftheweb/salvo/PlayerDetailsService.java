@@ -39,9 +39,18 @@ public class PlayerDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Player player = playerRepository.findByUserName(username);
         if (player != null) {
-            return new User(player.getUserName(), passwordEncoder.encode(player.getPassword()), getAuthorities(player.getAuthorities()));
+            return new CustomUserDetails(player.getUserName(), player.getUserId(), passwordEncoder.encode(player.getPassword()), getAuthorities(player.getAuthorities()));
         } else {
             throw new UsernameNotFoundException("User not found");
         }
     }
+
+    public class CustomUserDetails extends User {
+        public final Long playerId;
+        public CustomUserDetails(String username, Long playerId, String password, Collection<? extends GrantedAuthority> authorities) {
+            super(username, password, authorities);
+            this.playerId = playerId;
+        }
+    }
+
 }

@@ -35,6 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/logout").permitAll()
+                .antMatchers("/api/game_view/{player}").access("hasRole('ROLE_PLAYER') and @mySecurityService.canAccessGameView(request, #player)")
+                .antMatchers("/api/game/{gameId}/players").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .logout()
