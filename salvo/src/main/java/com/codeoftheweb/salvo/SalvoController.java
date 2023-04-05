@@ -101,22 +101,18 @@ public class SalvoController {
             if (player == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be logged in to join a game.");
             }
-
             // Get the game with the given ID
             Game game = gameRepository.findById(gameId).orElse(null);
             if (game == null) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No such game.");
             }
-
             // Check if the game has only one player
             if (game.getGamePlayers().size() >= 2) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Game is full.");
             }
-
             // Create and save a new game player
             GamePlayer gamePlayer = new GamePlayer(game, player);
             gamePlayerRepository.save(gamePlayer);
-
             // Send a Created response with the new game player ID and game ID for some front end fun :D
             Map<String, Long> responseMap = new HashMap<>();
             responseMap.put("playerID", player.getUserId());
@@ -134,7 +130,7 @@ public class SalvoController {
     public ResponseEntity<String> createGame(@RequestParam Long player) {
         try {
             LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd --- HH:mm:ss");
             String gameCreated = now.format(formatter);
             Player user = playerRepository.findById(player).orElse(null);
             if (user == null) {
