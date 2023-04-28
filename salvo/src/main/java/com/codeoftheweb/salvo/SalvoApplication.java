@@ -35,13 +35,14 @@ public class SalvoApplication {
 			Player player5 = new Player("Jakub","123","ROLE_PLAYER");
 			Player player6 = new Player("Igor","123","ROLE_PLAYER");
 			Player player7 = new Player("Yura","123","ROLE_PLAYER");
-			Player player8 = new Player("Josef","123","ROLE_USER");
+			Player player8 = new Player("Josef","123","ROLE_PLAYER");
+			Player player9 = new Player("test","123","ROLE_PLAYER");
 
 			Game game1 = new Game(dtf.format(now));
 			Game game2 = new Game(dtf.format(now.plus(1, ChronoUnit.HOURS)));
 			Game game3 = new Game(dtf.format(now.plus(2, ChronoUnit.HOURS)));
 			Game game4 = new Game(dtf.format(now.plus(3, ChronoUnit.HOURS)));
-			Game game5 = new Game(dtf.format(now.plus(3, ChronoUnit.HOURS)));
+			Game game6 = new Game(dtf.format(now));
 
 			GamePlayer gamePlayer1 = new GamePlayer(game1,player1);
 			GamePlayer gamePlayer2 = new GamePlayer(game1,player2);
@@ -51,6 +52,7 @@ public class SalvoApplication {
 			GamePlayer gamePlayer6 = new GamePlayer(game3,player6);
 			GamePlayer gamePlayer7 = new GamePlayer(game4,player1);
 			GamePlayer gamePlayer8 = new GamePlayer(game4,player8);
+			GamePlayer gamePlayer9 = new GamePlayer(game6,player9);
 
 			playerRep.save(player1);
 			playerRep.save(player2);
@@ -60,11 +62,13 @@ public class SalvoApplication {
 			playerRep.save(player6);
 			playerRep.save(player7);
 			playerRep.save(player8);
+			playerRep.save(player9);
 
 			gameRep.save(game1);
 			gameRep.save(game2);
 			gameRep.save(game3);
 			gameRep.save(game4);
+			gameRep.save(game6);
 
 			gamePlayerRepo.save(gamePlayer1);
 			gamePlayerRepo.save(gamePlayer2);
@@ -74,6 +78,7 @@ public class SalvoApplication {
 			gamePlayerRepo.save(gamePlayer6);
 			gamePlayerRepo.save(gamePlayer7);
 			gamePlayerRepo.save(gamePlayer8);
+			gamePlayerRepo.save(gamePlayer9);
 
 			List<String> locationShipCruiser = new ArrayList<>();
 			locationShipCruiser.add("D8");
@@ -327,6 +332,10 @@ public class SalvoApplication {
 			Ship shipHappyV7 = new Ship("HappyV7", gamePlayer8, locationShipHappyV7);
 			Ship shipCruiserV7 = new Ship("CruiserV7", gamePlayer8, locationShipCruiserV7);
 
+			Ship shipCruiserTest = new Ship("Cruiser", gamePlayer9, locationShipCruiser);
+			Ship shipHappyTest = new Ship("Happy", gamePlayer9, locationShipHappy);
+			Ship shipJackTest = new Ship("Jack Sparrow", gamePlayer9, locationJackShip);
+
          Salvo RoundGP1 = new Salvo(gamePlayer1, GP1rounds);
 		 Salvo RoundGP2 = new Salvo(gamePlayer2, GP2rounds);
 		 Salvo RoundGP3 = new Salvo(gamePlayer3, GP3rounds);
@@ -338,12 +347,16 @@ public class SalvoApplication {
 
 		 Score scoreGP1 = new Score(1, player1, game1);
 		 Score scoreGP2 = new Score(0, player2, game1);
-			Score scoreGP3 = new Score(0, player3, game2);
-			Score scoreGP4 = new Score(1, player4, game2);
-			Score scoreGP5 = new Score(2, player5, game3);
-			Score scoreGP6 = new Score(0, player6, game3);
-			Score scoreGP7 = new Score(1, player7, game4);
-			Score scoreGP8 = new Score(0, player8, game4);
+		 Score scoreGP3 = new Score(0, player3, game2);
+		 Score scoreGP4 = new Score(1, player4, game2);
+		 Score scoreGP5 = new Score(2, player5, game3);
+		 Score scoreGP6 = new Score(0, player6, game3);
+		 Score scoreGP7 = new Score(1, player7, game4);
+		 Score scoreGP8 = new Score(0, player8, game4);
+
+			shipRep.save(shipCruiserTest);
+			shipRep.save(shipHappyTest);
+			shipRep.save(shipJackTest);
 
 			shipRep.save(shipCruiser);
 			shipRep.save(shipHappy);

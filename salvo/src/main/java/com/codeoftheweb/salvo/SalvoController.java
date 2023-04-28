@@ -30,6 +30,9 @@ public class SalvoController {
     private GameRepository gameRepository;
 
     @Autowired
+    private ShipRepository shipRepository;
+
+    @Autowired
     private GamePlayerRepository gamePlayerRepository;
 
     @Autowired
@@ -91,6 +94,67 @@ public class SalvoController {
         }
     }
 
+    @PostMapping("/createGameShips")
+    public ResponseEntity<String> createGameShips(@RequestBody List<List<String>> gameData, HttpServletRequest request) {
+        try {
+
+            List<String> happyShip = new ArrayList<>();
+            List<String> cruiserShip = new ArrayList<>();
+            List<String> jackShip = new ArrayList<>();
+
+            HttpSession session = request.getSession();
+            String ID = "playerId";
+            Long playerId = (Long) session.getAttribute(ID);
+
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd --- HH:mm:ss");
+            String gameCreated = now.format(formatter);
+
+            Game game = new Game(gameCreated);
+            Player player = playerRepository.findById(playerId).orElse(null);
+
+            GamePlayer gamePlayer = new GamePlayer(game,player);
+
+            gameRepository.save(game);
+            gamePlayerRepository.save(gamePlayer);
+
+            for (int i = 0; i < gameData.size(); i++) {
+                List<String> sublist = gameData.get(i);
+                int length = sublist.size();
+                switch (length) {
+                    case 2:
+                        happyShip.addAll(sublist);
+                        break;
+                    case 3:
+                        cruiserShip.addAll(sublist);
+                        break;
+                    case 4:
+                        jackShip.addAll(sublist);
+                        break;
+                    default:
+                }
+            }
+
+            System.out.println(cruiserShip);
+            Ship shipCruiser = new Ship("Cruiser", gamePlayer, cruiserShip);
+            Ship shipHappy = new Ship("Happy", gamePlayer, happyShip);
+            Ship shipJack = new Ship("Jack", gamePlayer, jackShip);
+
+            shipRepository.save(shipCruiser);
+            shipRepository.save(shipHappy);
+            shipRepository.save(shipJack);
+
+            // use gameId, happyShip, cruiserShip, and jackShip to create the game
+            return ResponseEntity.status(HttpStatus.CREATED).body("OK");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to join game.");
+        }
+    }
+
+
+
+
+
     @PostMapping("/game/{gameId}/players")
     ResponseEntity<Object> joinGame(@PathVariable Long gameId, @RequestBody Map<String, Long> requestBody) {
         try {
@@ -113,11 +177,18 @@ public class SalvoController {
             // Create and save a new game player
             GamePlayer gamePlayer = new GamePlayer(game, player);
             gamePlayerRepository.save(gamePlayer);
+
+            Long shipsAreThere = null;
+            if (gamePlayer.getShips() != null) {
+                shipsAreThere = Long.parseLong("Yes");;
+            }
+
             // Send a Created response with the new game player ID and game ID for some front end fun :D
             Map<String, Long> responseMap = new HashMap<>();
             responseMap.put("playerID", player.getUserId());
             responseMap.put("gameID", gameId);
             responseMap.put("gamePlayerID", gamePlayer.getGamePlayerId());
+            responseMap.put("ships", shipsAreThere);
             return ResponseEntity.status(HttpStatus.CREATED).body(responseMap);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to join game.");
@@ -125,9 +196,9 @@ public class SalvoController {
     }
 
 
-
+/*
     @PostMapping("/games")
-    public ResponseEntity<String> createGame(@RequestParam Long player) {
+    public ResponseEntity<Object> createGame(@RequestParam Long player) {
         try {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd --- HH:mm:ss");
@@ -140,12 +211,15 @@ public class SalvoController {
             gameRepository.save(game);
             GamePlayer gamePlayer = new GamePlayer(game, user);
             gamePlayerRepository.save(gamePlayer);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Game created successfully!");
+
+
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(Long.toString(game.getGameId()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create game.");
         }
     }
-
+*/
 
     @GetMapping("/games")
     public List<Object> getGames() {
@@ -188,7 +262,13 @@ public class SalvoController {
         oneGamePlayer.put("created", gamePlayer.getGames().getGameCreated());
         oneGamePlayer.put("gamePlayers", getGamePlayersData(gamePlayer.getGames().getGamePlayers(), GPId));
         oneGamePlayer.put("ships", getShipsData(gamePlayer.getShips()));
-        oneGamePlayer.put("salvoes", salvoRepository.findById(GPId).get().getSalvoLocation());
+
+        Salvo salvo = salvoRepository.findById(GPId).orElse(null);
+        if (salvo != null) {
+            oneGamePlayer.put("salvoes", salvo.getSalvoLocation());
+        } else {
+            oneGamePlayer.put("salvoes", null);
+        }
     return oneGamePlayer;
     }
 
@@ -227,6 +307,7 @@ public class SalvoController {
        return
                 mapping;
    }
+
     public List<Object> getGamePlayersInAGameData(Set<GamePlayer> mapGame){
         return mapGame
                 .stream().map(this::getIndividualGamePlayerInAGameData).collect(Collectors.toList());
@@ -235,6 +316,7 @@ public class SalvoController {
         Map<String, Object> mapping = new LinkedHashMap<>();
         mapping.put("id", gamePlayerEach.getGamePlayerId());
         mapping.put("players",  getPlayerData(gamePlayerEach.getPlayers()));
+        mapping.put("shipsPlaced", gamePlayerEach.getShips());
         return mapping;
     }
 

@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class GamePlayer {
@@ -74,14 +75,5 @@ public class GamePlayer {
         this.salvos = salvos;
     }
 
-    @Override
-    public String toString() {
-        return "GamePlayer{" +
-                "gamePlayerId=" + gamePlayerId +
-                ", games=" + games +
-                ", players=" + players +
-                ", salvos=" + salvos +
-                ", ships=" + ships +
-                '}';
-    }
+
 }
