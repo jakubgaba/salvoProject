@@ -50,6 +50,7 @@ public class SalvoController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -63,7 +64,9 @@ public class SalvoController {
                 }
                 UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 Long playerId = ((PlayerDetailsService.CustomUserDetails) userDetails).playerId;
+
                 request.getSession(true).setAttribute("playerId", playerId);
+
                 SecurityContextHolder.getContext().setAuthentication(token);
                 return ResponseEntity.ok(playerId);
             } catch (AuthenticationException e) {
@@ -93,6 +96,62 @@ public class SalvoController {
                     .body(Collections.singletonMap("error", "You must be logged in to perform this action"));
         }
     }
+
+
+    @PostMapping("/joinGame")
+    public ResponseEntity<String> joinGame(@RequestParam("gameid") Long gameId, @RequestBody List<List<String>> gameData, HttpServletRequest request) {
+        try {
+            List<String> happyShip = new ArrayList<>();
+            List<String> cruiserShip = new ArrayList<>();
+            List<String> jackShip = new ArrayList<>();
+
+            HttpSession session = request.getSession();
+            String ID = "playerId";
+            Long playerId = (Long) session.getAttribute(ID);
+
+            Game game = gameRepository.findById(gameId).orElse(null);
+            Player player = playerRepository.findById(playerId).orElse(null);
+
+            GamePlayer gamePlayer = new GamePlayer(game,player);
+
+
+            gamePlayerRepository.save(gamePlayer);
+
+            for (int i = 0; i < gameData.size(); i++) {
+                List<String> sublist = gameData.get(i);
+                int length = sublist.size();
+                switch (length) {
+                    case 2:
+                        happyShip.addAll(sublist);
+                        break;
+                    case 3:
+                        cruiserShip.addAll(sublist);
+                        break;
+                    case 4:
+                        jackShip.addAll(sublist);
+                        break;
+                    default:
+                }
+            }
+
+
+            Ship shipCruiser = new Ship("Cruiser", gamePlayer, cruiserShip);
+            Ship shipHappy = new Ship("Happy", gamePlayer, happyShip);
+            Ship shipJack = new Ship("Jack", gamePlayer, jackShip);
+
+            shipRepository.save(shipCruiser);
+            shipRepository.save(shipHappy);
+            shipRepository.save(shipJack);
+
+
+            return ResponseEntity.status(HttpStatus.CREATED).body("OK");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to join game.");
+        }
+    }
+
+
+
 
     @PostMapping("/createGameShips")
     public ResponseEntity<String> createGameShips(@RequestBody List<List<String>> gameData, HttpServletRequest request) {
@@ -135,7 +194,7 @@ public class SalvoController {
                 }
             }
 
-            System.out.println(cruiserShip);
+
             Ship shipCruiser = new Ship("Cruiser", gamePlayer, cruiserShip);
             Ship shipHappy = new Ship("Happy", gamePlayer, happyShip);
             Ship shipJack = new Ship("Jack", gamePlayer, jackShip);
@@ -151,7 +210,25 @@ public class SalvoController {
         }
     }
 
-
+    @PostMapping("/createShots/{gameplayerID}")
+    public ResponseEntity<String> createShots(@RequestBody List<String> shots, HttpServletRequest request, @PathVariable Long gameplayerID) {
+        try {
+            List<String> locations = new ArrayList<>();
+            locations.addAll(shots);
+            System.out.println(locations);
+            Map<Integer, String> GProunds = new HashMap<Integer, String>();
+            GProunds.put(1,locations.toString());
+            Salvo RoundGP1 = new Salvo(gamePlayerRepository.findById(gameplayerID).orElse(null), GProunds);
+            System.out.println(RoundGP1.getSalvoLocation());
+            HttpSession session = request.getSession();
+            String ID = "playerId";
+            Long playerId = (Long) session.getAttribute(ID);
+            salvoRepository.save(RoundGP1);
+            return ResponseEntity.status(HttpStatus.CREATED).body("OK");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to shoot.");
+        }
+    }
 
 
 
@@ -159,7 +236,7 @@ public class SalvoController {
     ResponseEntity<Object> joinGame(@PathVariable Long gameId, @RequestBody Map<String, Long> requestBody) {
         try {
             // Get the current user
-            System.out.println(gameId);
+
             Long playerId = requestBody.get("playerId");
             Player player = playerRepository.findById(playerId).orElse(null);
             if (player == null) {
@@ -194,6 +271,8 @@ public class SalvoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to join game.");
         }
     }
+
+
 
 
 /*
@@ -269,6 +348,7 @@ public class SalvoController {
         } else {
             oneGamePlayer.put("salvoes", null);
         }
+
     return oneGamePlayer;
     }
 

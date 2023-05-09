@@ -51,7 +51,7 @@ public class SalvoApplication {
 			GamePlayer gamePlayer5 = new GamePlayer(game3,player5);
 			GamePlayer gamePlayer6 = new GamePlayer(game3,player6);
 			GamePlayer gamePlayer7 = new GamePlayer(game4,player1);
-			GamePlayer gamePlayer8 = new GamePlayer(game4,player8);
+
 			GamePlayer gamePlayer9 = new GamePlayer(game6,player9);
 
 			playerRep.save(player1);
@@ -77,7 +77,7 @@ public class SalvoApplication {
 			gamePlayerRepo.save(gamePlayer5);
 			gamePlayerRepo.save(gamePlayer6);
 			gamePlayerRepo.save(gamePlayer7);
-			gamePlayerRepo.save(gamePlayer8);
+
 			gamePlayerRepo.save(gamePlayer9);
 
 			List<String> locationShipCruiser = new ArrayList<>();
@@ -329,8 +329,7 @@ public class SalvoApplication {
 			Ship shipCruiserV5 = new Ship("CruiserV5", gamePlayer6, locationShipCruiserV5);
 			Ship shipHappyV6 = new Ship("HappyV6", gamePlayer7, locationShipHappyV6);
 			Ship shipCruiserV6 = new Ship("CruiserV6", gamePlayer7, locationShipCruiserV6);
-			Ship shipHappyV7 = new Ship("HappyV7", gamePlayer8, locationShipHappyV7);
-			Ship shipCruiserV7 = new Ship("CruiserV7", gamePlayer8, locationShipCruiserV7);
+
 
 			Ship shipCruiserTest = new Ship("Cruiser", gamePlayer9, locationShipCruiser);
 			Ship shipHappyTest = new Ship("Happy", gamePlayer9, locationShipHappy);
@@ -343,7 +342,7 @@ public class SalvoApplication {
 		 Salvo RoundGP5 = new Salvo(gamePlayer5, GP5rounds);
 		 Salvo RoundGP6 = new Salvo(gamePlayer6, GP6rounds);
 		 Salvo RoundGP7 = new Salvo(gamePlayer7, GP7rounds);
-		 Salvo RoundGP8 = new Salvo(gamePlayer8, GP8rounds);
+
 
 		 Score scoreGP1 = new Score(1, player1, game1);
 		 Score scoreGP2 = new Score(0, player2, game1);
@@ -371,12 +370,12 @@ public class SalvoApplication {
 			shipRep.save(shipCruiserV5);
 			shipRep.save(shipCruiserV6);
 			shipRep.save(shipCruiserV2);
-			shipRep.save(shipCruiserV7);
+
 			shipRep.save(shipHappyV3);
 			shipRep.save(shipHappyV4);
 			shipRep.save(shipHappyV5);
 			shipRep.save(shipHappyV6);
-			shipRep.save(shipHappyV7);
+
 
             salvoRep.save(RoundGP1);
 			salvoRep.save(RoundGP2);
@@ -385,7 +384,7 @@ public class SalvoApplication {
 			salvoRep.save(RoundGP5);
 			salvoRep.save(RoundGP6);
 			salvoRep.save(RoundGP7);
-			salvoRep.save(RoundGP8);
+
 
 			scoreRep.save(scoreGP1);
 			scoreRep.save(scoreGP2);
