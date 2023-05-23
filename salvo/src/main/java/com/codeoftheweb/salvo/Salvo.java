@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Map;
 
 //The @Entity annotation is used to define a class as an entity bean.
@@ -22,7 +23,9 @@ public class Salvo {
     //In this case, the collection is a map of integers to strings.
     //The targetClass attribute specifies that the collection should be of the String class.
     @ElementCollection(targetClass= String.class)
-    private Map<Integer,String> salvoLocation;
+    private List<String> salvoLocation;
+
+    private int roundNumber;
 
     //The @ManyToOne annotation is used to define a many-to-one relationship between entities.
     //In this case, the Salvo entity has a many-to-one relationship with the GamePlayer entity.
@@ -35,9 +38,10 @@ public class Salvo {
     public Salvo(){
     }
     //constructor with parameters to define a gamePlayerSalvo and a salvoLocation
-    public Salvo(GamePlayer gamePlayerSalvo, Map<Integer,String> salvoLocation){
+    public Salvo(GamePlayer gamePlayerSalvo, List<String> salvoLocation,  int roundNumber){
         this.gamePlayerSalvo=gamePlayerSalvo;
         this.salvoLocation=salvoLocation;
+        this.roundNumber = roundNumber;
     }
 
     //getters and setters for salvoId, salvoLocation and gamePlayerSalvo
@@ -45,15 +49,23 @@ public class Salvo {
         return salvoId;
     }
 
+    public int getRoundNumber() {
+        return roundNumber;
+    }
+
+    public void setRoundNumber(int roundNumber) {
+        this.roundNumber = roundNumber;
+    }
+
     public void setSalvoId(long salvoId) {
         this.salvoId = salvoId;
     }
 
-    public Map<Integer, String> getSalvoLocation() {
+    public List<String> getSalvoLocation() {
         return salvoLocation;
     }
 
-    public void setSalvoLocation(Map<Integer, String> salvoLocation) {
+    public void setSalvoLocation(List<String> salvoLocation) {
         this.salvoLocation = salvoLocation;
     }
 

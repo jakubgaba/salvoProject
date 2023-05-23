@@ -267,51 +267,51 @@ public class SalvoApplication {
 			thirdShotGP8.add("F4");
 			thirdShotGP8.add("F1");
 
-			Map<Integer, String> GP1rounds = new HashMap<Integer, String>();
-			GP1rounds.put(1,firstShotGP1.toString());
-			GP1rounds.put(2,secondShotGP1.toString());
-			GP1rounds.put(3,thirdShotGP1.toString());
-            GP1rounds.put(4,fourthShotGP1.toString());
-			GP1rounds.put(5,fifthShotGP1.toString());
-			GP1rounds.put(6,sixthShotGP1.toString());
+			List<String> GP1rounds = new ArrayList<>();
+			GP1rounds.add(firstShotGP1.toString());
+			GP1rounds.add(secondShotGP1.toString());
+			GP1rounds.add(thirdShotGP1.toString());
+			GP1rounds.add(fourthShotGP1.toString());
+			GP1rounds.add(fifthShotGP1.toString());
+			GP1rounds.add(sixthShotGP1.toString());
 
-			Map<Integer, String> GP2rounds = new HashMap<Integer, String>();
-			GP2rounds.put(1,firstShotGP2.toString());
-			GP2rounds.put(2,secondShotGP2.toString());
-			GP2rounds.put(3,thirdShotGP2.toString());
-			GP2rounds.put(4,fourthShotGP2.toString());
-			GP2rounds.put(5,fifthShotGP2.toString());
-			GP2rounds.put(6,sixthShotGP2.toString());
+			List<String> GP2rounds = new ArrayList<>();
+			GP2rounds.add(firstShotGP2.toString());
+			GP2rounds.add(secondShotGP2.toString());
+			GP2rounds.add(thirdShotGP2.toString());
+			GP2rounds.add(fourthShotGP2.toString());
+			GP2rounds.add(fifthShotGP2.toString());
+			GP2rounds.add(sixthShotGP2.toString());
 
-			Map<Integer, String> GP3rounds = new HashMap<Integer, String>();
-			GP3rounds.put(1, firstShotGP3.toString());
-			GP3rounds.put(2, secondShotGP3.toString());
-			GP3rounds.put(3, thirdShotGP3.toString());
+			List<String> GP3rounds = new ArrayList<>();
+			GP3rounds.add(firstShotGP3.toString());
+			GP3rounds.add(secondShotGP3.toString());
+			GP3rounds.add(thirdShotGP3.toString());
 
-			Map<Integer, String> GP4rounds = new HashMap<Integer, String>();
-			GP4rounds.put(1, firstShotGP4.toString());
-			GP4rounds.put(2, secondShotGP4.toString());
-			GP4rounds.put(3, thirdShotGP4.toString());
+			List<String> GP4rounds = new ArrayList<>();
+			GP4rounds.add(firstShotGP4.toString());
+			GP4rounds.add(secondShotGP4.toString());
+			GP4rounds.add(thirdShotGP4.toString());
 
-			Map<Integer, String> GP5rounds = new HashMap<Integer, String>();
-			GP5rounds.put(1, firstShotGP5.toString());
-			GP5rounds.put(2, secondShotGP5.toString());
-			GP5rounds.put(3, thirdShotGP5.toString());
+			List<String> GP5rounds = new ArrayList<>();
+			GP5rounds.add(firstShotGP5.toString());
+			GP5rounds.add(secondShotGP5.toString());
+			GP5rounds.add(thirdShotGP5.toString());
 
-			Map<Integer, String> GP6rounds = new HashMap<Integer, String>();
-			GP6rounds.put(1, firstShotGP6.toString());
-			GP6rounds.put(2, secondShotGP6.toString());
-			GP6rounds.put(3, thirdShotGP6.toString());
+			List<String> GP6rounds = new ArrayList<>();
+			GP6rounds.add(firstShotGP6.toString());
+			GP6rounds.add(secondShotGP6.toString());
+			GP6rounds.add(thirdShotGP6.toString());
 
-			Map<Integer, String> GP7rounds = new HashMap<Integer, String>();
-			GP7rounds.put(1, firstShotGP7.toString());
-			GP7rounds.put(2, secondShotGP7.toString());
-			GP7rounds.put(3, thirdShotGP7.toString());
+			List<String> GP7rounds = new ArrayList<>();
+			GP7rounds.add(firstShotGP7.toString());
+			GP7rounds.add(secondShotGP7.toString());
+			GP7rounds.add(thirdShotGP7.toString());
 
-			Map<Integer, String> GP8rounds = new HashMap<Integer, String>();
-			GP8rounds.put(1, firstShotGP8.toString());
-			GP8rounds.put(2, secondShotGP8.toString());
-			GP8rounds.put(3, thirdShotGP8.toString());
+			List<String> GP8rounds = new ArrayList<>();
+			GP8rounds.add(firstShotGP8.toString());
+			GP8rounds.add(secondShotGP8.toString());
+			GP8rounds.add(thirdShotGP8.toString());
 
 			Ship shipCruiser = new Ship("Cruiser", gamePlayer1, locationShipCruiser);
 			Ship shipHappy = new Ship("Happy", gamePlayer1, locationShipHappy);
@@ -335,13 +335,13 @@ public class SalvoApplication {
 			Ship shipHappyTest = new Ship("Happy", gamePlayer9, locationShipHappy);
 			Ship shipJackTest = new Ship("Jack Sparrow", gamePlayer9, locationJackShip);
 
-         Salvo RoundGP1 = new Salvo(gamePlayer1, GP1rounds);
-		 Salvo RoundGP2 = new Salvo(gamePlayer2, GP2rounds);
-		 Salvo RoundGP3 = new Salvo(gamePlayer3, GP3rounds);
-		 Salvo RoundGP4 = new Salvo(gamePlayer4, GP4rounds);
-		 Salvo RoundGP5 = new Salvo(gamePlayer5, GP5rounds);
-		 Salvo RoundGP6 = new Salvo(gamePlayer6, GP6rounds);
-		 Salvo RoundGP7 = new Salvo(gamePlayer7, GP7rounds);
+         Salvo RoundGP1 = new Salvo(gamePlayer1, GP1rounds, 1);
+		 Salvo RoundGP2 = new Salvo(gamePlayer2, GP2rounds,1);
+		 Salvo RoundGP3 = new Salvo(gamePlayer3, GP3rounds,1);
+		 Salvo RoundGP4 = new Salvo(gamePlayer4, GP4rounds,1);
+		 Salvo RoundGP5 = new Salvo(gamePlayer5, GP5rounds,1);
+		 Salvo RoundGP6 = new Salvo(gamePlayer6, GP6rounds,1);
+		 Salvo RoundGP7 = new Salvo(gamePlayer7, GP7rounds,1);
 
 
 		 Score scoreGP1 = new Score(1, player1, game1);

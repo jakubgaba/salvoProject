@@ -87,6 +87,7 @@ public class Ship {
         return shipType;
     }
 
+
     /**
      * Getter method for shipLocation
      * @return The location of the ship

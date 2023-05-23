@@ -211,24 +211,81 @@ public class SalvoController {
     }
 
     @PostMapping("/createShots/{gameplayerID}")
-    public ResponseEntity<String> createShots(@RequestBody List<String> shots, HttpServletRequest request, @PathVariable Long gameplayerID) {
+    public ResponseEntity<?> createShots(@RequestBody List<String> shots, @PathVariable Long gameplayerID) {
         try {
-            List<String> locations = new ArrayList<>();
-            locations.addAll(shots);
-            System.out.println(locations);
-            Map<Integer, String> GProunds = new HashMap<Integer, String>();
-            GProunds.put(1,locations.toString());
-            Salvo RoundGP1 = new Salvo(gamePlayerRepository.findById(gameplayerID).orElse(null), GProunds);
-            System.out.println(RoundGP1.getSalvoLocation());
-            HttpSession session = request.getSession();
-            String ID = "playerId";
-            Long playerId = (Long) session.getAttribute(ID);
-            salvoRepository.save(RoundGP1);
-            return ResponseEntity.status(HttpStatus.CREATED).body("OK");
+            List<String> locations = new ArrayList<>(shots);
+
+            GamePlayer gamePlayer = gamePlayerRepository.findById(gameplayerID).orElse(null);
+            if (gamePlayer == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game player not found.");
+            }
+
+            Integer previousRoundNumber = gamePlayer.getSalvos().stream()
+                    .map(Salvo::getRoundNumber)
+                    .max(Comparator.naturalOrder())
+                    .orElse(0);
+
+            if (previousRoundNumber == 0) {
+
+                Game game = gamePlayer.getGames();
+                if (game == null) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game not found.");
+                }
+
+                Long enemyGamePlayerId = game.getGamePlayers().stream()
+                        .map(GamePlayer::getGamePlayerId)
+                        .filter(gpId -> !gpId.equals(gameplayerID))
+                        .findFirst()
+                        .orElse(null);
+
+                if (enemyGamePlayerId != null) {
+                    GamePlayer enemyGamePlayer = gamePlayerRepository.findById(enemyGamePlayerId).orElse(null);
+                    if (enemyGamePlayer != null) {
+                        Salvo latestEnemySalvo = enemyGamePlayer.getSalvos().stream()
+                                .max(Comparator.comparing(Salvo::getRoundNumber))
+                                .orElse(null);
+                        if (latestEnemySalvo != null) {
+                            latestEnemySalvo.setRoundNumber(0);
+                        }
+
+                        List<String> enemyShipLocations = enemyGamePlayer.getShips().stream()
+                                .flatMap(ship -> ship.getShipLocation().stream()
+                                        .map(loc -> ship.getShipType() + "-" + loc))
+                                .collect(Collectors.toList());
+
+                        System.out.println(enemyShipLocations);
+                        Map<String, String> matchedLocations = locations.stream()
+                                .flatMap(location -> enemyShipLocations.stream()
+                                        .filter(esl -> esl.split("-")[1].equals(location))
+                                        .map(esl -> new AbstractMap.SimpleEntry<>(location, esl.split("-")[0].substring(0, 1))))
+                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+                        locations = locations.stream()
+                                .map(location -> location + (matchedLocations.containsKey(location) ? matchedLocations.get(location) + "T" : "F"))
+                                .collect(Collectors.toList());
+
+
+                        Salvo roundGP = new Salvo(gamePlayer, locations, 1);
+
+                        System.out.println("Matched: " + matchedLocations);
+                        System.out.println("Enemy locations: " + enemyShipLocations);
+                        System.out.println("Shooted location: " + locations);
+
+                        salvoRepository.save(roundGP);
+                        return ResponseEntity.status(HttpStatus.CREATED).body(matchedLocations);
+                    }
+                }
+
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Enemy game player not found.");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("You already played. Wait for the other player.");
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to shoot.");
         }
     }
+
+
 
 
 
@@ -342,15 +399,16 @@ public class SalvoController {
         oneGamePlayer.put("gamePlayers", getGamePlayersData(gamePlayer.getGames().getGamePlayers(), GPId));
         oneGamePlayer.put("ships", getShipsData(gamePlayer.getShips()));
 
-        Salvo salvo = salvoRepository.findById(GPId).orElse(null);
-        if (salvo != null) {
-            oneGamePlayer.put("salvoes", salvo.getSalvoLocation());
-        } else {
-            oneGamePlayer.put("salvoes", null);
-        }
-
-    return oneGamePlayer;
+        List<Salvo> salvos = new ArrayList<>(gamePlayer.getSalvos());
+        List<String> allSalvoLocations = salvos.stream()
+                .flatMap(salvo -> salvo.getSalvoLocation().stream())
+                .collect(Collectors.toList());
+        oneGamePlayer.put("salvoes", allSalvoLocations);
+        oneGamePlayer.put("round", salvos.stream().map(Salvo::getRoundNumber));
+        return oneGamePlayer;
     }
+
+
 
 
     public List<Object> getGamePlayersData(Set<GamePlayer> gamePlayers, Long GPId){
@@ -363,11 +421,11 @@ public class SalvoController {
         mapping.put("Player", gamePlayer.getPlayers().getUserName());
         mapping.put("Score", gamePlayer.getPlayers().getScoresPlayer().stream().map(Score::getScore));
         if(gamePlayer.getPlayers().getUserId() != GPId){
-            mapping.put("enemyShipLocations", gamePlayer.getShips().stream().map(Ship::getShipLocation));
-            mapping.put("enemySalvoes", gamePlayer.getSalvos().stream().map(Salvo::getSalvoLocation));
+            mapping.put("enemySalvoes", gamePlayer.getSalvos().stream().flatMap(salvo -> salvo.getSalvoLocation().stream()));
         }
         return mapping;
     }
+
 
     public List<Object> getShipsData(Set<Ship> ships){
         return ships.stream().map(this::getIndividualShipData).collect(Collectors.toList());

@@ -76,4 +76,10 @@ public class GamePlayer {
     }
 
 
+    @Override
+    public String toString() {
+        return "GamePlayer{" +
+                "salvos=" + salvos +
+                '}';
+    }
 }
