@@ -253,7 +253,6 @@ public class SalvoController {
                                         .map(loc -> ship.getShipType() + "-" + loc))
                                 .collect(Collectors.toList());
 
-                        System.out.println(enemyShipLocations);
                         Map<String, String> matchedLocations = locations.stream()
                                 .flatMap(location -> enemyShipLocations.stream()
                                         .filter(esl -> esl.split("-")[1].equals(location))
@@ -264,18 +263,39 @@ public class SalvoController {
                                 .map(location -> location + (matchedLocations.containsKey(location) ? matchedLocations.get(location) + "T" : "F"))
                                 .collect(Collectors.toList());
 
+                        List<String> enemyLocations = enemyShipLocations.stream()
+                                .map(esl -> esl.split("-")[1]) // Get the location part
+                                .collect(Collectors.toList());
+
 
                         Salvo roundGP = new Salvo(gamePlayer, locations, 1);
-
-                        System.out.println("Matched: " + matchedLocations);
-                        System.out.println("Enemy locations: " + enemyShipLocations);
-                        System.out.println("Shooted location: " + locations);
-
                         salvoRepository.save(roundGP);
+
+                        List<Salvo> salvos = new ArrayList<>(gamePlayer.getSalvos());
+                        salvos.add(roundGP);
+
+                        List<String> allSalvoLocations = salvos.stream()
+                                .flatMap(salvo -> salvo.getSalvoLocation().stream())
+                                .map(location -> location.contains("10") ? location.substring(0, 3) : location.substring(0, 2))
+                                .collect(Collectors.toList());
+
+                        allSalvoLocations.addAll(locations);
+
+                        if (allSalvoLocations.containsAll(enemyLocations)) {
+                            Score score;
+                            try {
+                                score = gamePlayer.getPlayers().getScoresPlayer().iterator().next();
+                                score.setScore(score.getScore() + 1);
+                            } catch (NoSuchElementException e) {
+                                score = new Score(1, gamePlayer.getPlayers(), gamePlayer.getGames());
+                            }
+                            scoreRepository.save(score);
+                            System.out.println(score.getScore());
+                            return ResponseEntity.status(HttpStatus.OK).body("GAME OVER");
+                        }
                         return ResponseEntity.status(HttpStatus.CREATED).body(matchedLocations);
                     }
                 }
-
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Enemy game player not found.");
             } else {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("You already played. Wait for the other player.");
