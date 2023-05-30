@@ -171,7 +171,7 @@ public class SalvoController {
 
             Game game = new Game(gameCreated);
             Player player = playerRepository.findById(playerId).orElse(null);
-
+            
             GamePlayer gamePlayer = new GamePlayer(game,player);
 
             gameRepository.save(game);
@@ -290,7 +290,6 @@ public class SalvoController {
                                 score = new Score(1, gamePlayer.getPlayers(), gamePlayer.getGames());
                             }
                             scoreRepository.save(score);
-                            System.out.println(score.getScore());
                             return ResponseEntity.status(HttpStatus.OK).body("GAME OVER");
                         }
                         return ResponseEntity.status(HttpStatus.CREATED).body(matchedLocations);
