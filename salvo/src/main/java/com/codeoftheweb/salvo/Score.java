@@ -4,7 +4,11 @@ package com.codeoftheweb.salvo;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Entity
@@ -71,4 +75,27 @@ public class Score {
     public void setScore(int score) {
         Score = score;
     }
+
+    public Map<String, Object> toFirebaseObject() {
+        Map<String, Object> firebaseObject = new HashMap<>();
+
+        firebaseObject.put("scoreId", this.scoreId);
+        firebaseObject.put("score", this.Score);
+        // If you want to include game and player's id for each score,
+        // uncomment the following lines
+        // firebaseObject.put("gameId", this.gameScore.getGameId());
+        // firebaseObject.put("playerId", this.playerScore.getPlayerId());
+        // You might want to convert the finishDate to a String for easier handling
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate;
+        if (finishDate != null) {
+            formattedDate = format.format(finishDate);
+        } else {
+
+            formattedDate = "";
+        }
+
+        return firebaseObject;
+    }
+
 }

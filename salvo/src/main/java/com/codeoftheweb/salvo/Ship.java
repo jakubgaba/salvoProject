@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Entity represent the objects that we want to persist in the database.
@@ -110,6 +108,14 @@ public class Ship {
 
     public void setGamePlayer(GamePlayer gamePlayers) {
         this.gamePlayer = gamePlayers;
+    }
+
+    public Map<String, Object> toFirebaseObject() {
+        Map<String, Object> firebaseObject = new HashMap<>();
+        firebaseObject.put("shipId", this.shipId);
+        firebaseObject.put("shipType", this.shipType);
+        firebaseObject.put("shipLocation", this.shipLocation);
+        return firebaseObject;
     }
 
     @Override

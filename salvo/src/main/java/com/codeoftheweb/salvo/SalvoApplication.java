@@ -1,13 +1,11 @@
 package com.codeoftheweb.salvo;
 
+
+import com.codeoftheweb.salvo.firebaseUtilities.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,18 +17,22 @@ import java.util.*;
 
 public class SalvoApplication {
 
+
 	public static void main(String[] args) {
 		SpringApplication.run(SalvoApplication.class, args);
 	}
 	DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd --- HH:mm:ss");
 	LocalDateTime now = LocalDateTime.now();
 	@Bean
-	public CommandLineRunner initData(GamePlayerRepository gamePlayerRepo, GameRepository gameRep, PlayerRepository playerRep, ShipRepository shipRep, SalvoRepository salvoRep, ScoreRepository scoreRep){
+	public CommandLineRunner initData(GamePlayerService gamePlayerRepo, GameService gameService, PlayerService playerRep, ShipService shipRep, SalvoService salvoRep, ScoreService scoreRep){
 
 		return(args) -> {
 			Player player1 = new Player("Julio", "123","ROLE_PLAYER");
+
 			Player player2 = new Player("Paul","123","ROLE_PLAYER");
+
 			Player player3 = new Player("Robert","123","ROLE_PLAYER");
+
             Player player4 = new Player("Ronaldo","123","ROLE_PLAYER");
 			Player player5 = new Player("Jakub","123","ROLE_PLAYER");
 			Player player6 = new Player("Igor","123","ROLE_PLAYER");
@@ -51,32 +53,28 @@ public class SalvoApplication {
 			GamePlayer gamePlayer5 = new GamePlayer(game3,player5);
 			GamePlayer gamePlayer6 = new GamePlayer(game3,player6);
 			GamePlayer gamePlayer7 = new GamePlayer(game4,player1);
+			playerRep.saveToBoth(player1);
+			playerRep.saveToBoth(player2);
+			playerRep.saveToBoth(player3);
+			playerRep.saveToBoth(player4);
+			playerRep.saveToBoth(player5);
+			playerRep.saveToBoth(player6);
+			playerRep.saveToBoth(player7);
+			playerRep.saveToBoth(player8);
+
+			gameService.saveToBoth(game1);
+			gameService.saveToBoth(game2);
+			gameService.saveToBoth(game3);
+			gameService.saveToBoth(game4);
 
 
-
-			playerRep.save(player1);
-			playerRep.save(player2);
-			playerRep.save(player3);
-			playerRep.save(player4);
-			playerRep.save(player5);
-			playerRep.save(player6);
-			playerRep.save(player7);
-			playerRep.save(player8);
-
-
-			gameRep.save(game1);
-			gameRep.save(game2);
-			gameRep.save(game3);
-			gameRep.save(game4);
-
-
-			gamePlayerRepo.save(gamePlayer1);
-			gamePlayerRepo.save(gamePlayer2);
-			gamePlayerRepo.save(gamePlayer3);
-			gamePlayerRepo.save(gamePlayer4);
-			gamePlayerRepo.save(gamePlayer5);
-			gamePlayerRepo.save(gamePlayer6);
-			gamePlayerRepo.save(gamePlayer7);
+			gamePlayerRepo.saveToBoth(gamePlayer1);
+			gamePlayerRepo.saveToBoth(gamePlayer2);
+			gamePlayerRepo.saveToBoth(gamePlayer3);
+			gamePlayerRepo.saveToBoth(gamePlayer4);
+			gamePlayerRepo.saveToBoth(gamePlayer5);
+			gamePlayerRepo.saveToBoth(gamePlayer6);
+			gamePlayerRepo.saveToBoth(gamePlayer7);
 
 
 
@@ -143,8 +141,6 @@ public class SalvoApplication {
 			List<String> locationShipHappyV7 = new ArrayList<>();
 			locationShipHappyV7.add("F5");
 			locationShipHappyV7.add("G5");
-
-
 
 
 
@@ -351,42 +347,42 @@ public class SalvoApplication {
 		 Score scoreGP8 = new Score(0, player8, game4);
 
 
-			shipRep.save(shipCruiser);
-			shipRep.save(shipHappy);
-			shipRep.save(shipHappy2);
-			shipRep.save(shipThree);
-			shipRep.save(shipJack);
-			shipRep.save(shipCaptain);
-            shipRep.save(shipHappyV2);
-            shipRep.save(shipCruiserV2);
-			shipRep.save(shipCruiserV3);
-			shipRep.save(shipCruiserV4);
-			shipRep.save(shipCruiserV5);
-			shipRep.save(shipCruiserV6);
-			shipRep.save(shipCruiserV2);
+			shipRep.saveToBoth(shipCruiser);
+			shipRep.saveToBoth(shipHappy);
+			shipRep.saveToBoth(shipHappy2);
+			shipRep.saveToBoth(shipThree);
+			shipRep.saveToBoth(shipJack);
+			shipRep.saveToBoth(shipCaptain);
+            shipRep.saveToBoth(shipHappyV2);
+            shipRep.saveToBoth(shipCruiserV2);
+			shipRep.saveToBoth(shipCruiserV3);
+			shipRep.saveToBoth(shipCruiserV4);
+			shipRep.saveToBoth(shipCruiserV5);
+			shipRep.saveToBoth(shipCruiserV6);
+			shipRep.saveToBoth(shipCruiserV2);
 
-			shipRep.save(shipHappyV3);
-			shipRep.save(shipHappyV4);
-			shipRep.save(shipHappyV5);
-			shipRep.save(shipHappyV6);
-
-
-            salvoRep.save(RoundGP1);
-			salvoRep.save(RoundGP2);
-			salvoRep.save(RoundGP3);
-			salvoRep.save(RoundGP4);
-			salvoRep.save(RoundGP5);
-			salvoRep.save(RoundGP6);
-			salvoRep.save(RoundGP7);
+			shipRep.saveToBoth(shipHappyV3);
+			shipRep.saveToBoth(shipHappyV4);
+			shipRep.saveToBoth(shipHappyV5);
+			shipRep.saveToBoth(shipHappyV6);
 
 
-			scoreRep.save(scoreGP1);
-			scoreRep.save(scoreGP2);
-			scoreRep.save(scoreGP3);
-			scoreRep.save(scoreGP4);
-			scoreRep.save(scoreGP5);
-			scoreRep.save(scoreGP6);
-			scoreRep.save(scoreGP7);
+            salvoRep.saveToBoth(RoundGP1);
+			salvoRep.saveToBoth(RoundGP2);
+			salvoRep.saveToBoth(RoundGP3);
+			salvoRep.saveToBoth(RoundGP4);
+			salvoRep.saveToBoth(RoundGP5);
+			salvoRep.saveToBoth(RoundGP6);
+			salvoRep.saveToBoth(RoundGP7);
+
+
+			scoreRep.saveToBoth(scoreGP1);
+			scoreRep.saveToBoth(scoreGP2);
+			scoreRep.saveToBoth(scoreGP3);
+			scoreRep.saveToBoth(scoreGP4);
+			scoreRep.saveToBoth(scoreGP5);
+			scoreRep.saveToBoth(scoreGP6);
+			scoreRep.saveToBoth(scoreGP7);
 
 		};
 

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -62,21 +64,29 @@ public class Game {
         this.scoresGame = scoresGame;
     }
 
-    //Getter for the gameId field
+
     public long getGameId() {
         return gameId;
     }
-    //Setter for the gameId field
+
     public void setGameId(long gameId) {
         this.gameId = gameId;
     }
 
-    //Setter for the gameCreated field
+
     public void setGameCreated(String gameCreated) {
         this.gameCreated = gameCreated;
     }
 
-    //toString method that returns a string representation of the game
+
+    public Map<String, Object> toFirebaseObject() {
+        Map<String, Object> firebaseObject = new HashMap<>();
+        firebaseObject.put("id", this.getGameId());
+        firebaseObject.put("created", this.getGameCreated());
+        // Convert the GamePlayer set to a suitable format if needed
+        // firebaseObject.put("gamePlayers", this.convertGamePlayers(this.getGamePlayers()));
+        return firebaseObject;
+    }
     @Override
     public String toString() {
         return "Game{" +

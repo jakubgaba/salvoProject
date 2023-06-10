@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
+
 @Entity  //The annotation @Entity tells Spring to create a person table for this class.
 public class Player {
 
@@ -45,6 +44,8 @@ public class Player {
         this.password = password;
         this.authorities.add(auth);
     }
+
+
 
     @OneToMany(mappedBy="players")
     private Set<GamePlayer> gamePlayers = new HashSet<GamePlayer>();
@@ -110,6 +111,19 @@ public class Player {
 
     public boolean checkPassword(String password) {
         return password != null && password.equals(this.password);
+    }
+
+    public Map<String, Object> toFirebaseObject() {
+        Map<String, Object> firebaseObject = new HashMap<>();
+
+        firebaseObject.put("userId", this.userId);
+        firebaseObject.put("userName", this.userName);
+        firebaseObject.put("password", this.password);
+        firebaseObject.put("authorities", new ArrayList<>(this.authorities));
+        firebaseObject.put("gamePlayers", new ArrayList<>(this.gamePlayers));
+        firebaseObject.put("scoresPlayer", new ArrayList<>(this.scoresPlayer));
+
+        return firebaseObject;
     }
 
     @Override

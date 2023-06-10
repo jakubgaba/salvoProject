@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 //The @Entity annotation is used to define a class as an entity bean.
 //This class will be mapped to a database table named Salvo
@@ -79,6 +81,16 @@ public class Salvo {
         this.gamePlayerSalvo = gamePlayerSalvo;
     }
 
+
+    public Map<String, Object> toFirebaseObject() {
+        Map<String, Object> firebaseObject = new HashMap<>();
+
+        firebaseObject.put("salvoId", this.salvoId);
+        firebaseObject.put("salvoLocation", this.salvoLocation);
+        firebaseObject.put("roundNumber", this.roundNumber);
+
+        return firebaseObject;
+    }
 
     @Override
     public String toString() {

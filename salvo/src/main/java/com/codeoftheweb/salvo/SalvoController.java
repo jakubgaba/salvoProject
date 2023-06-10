@@ -1,9 +1,9 @@
 package com.codeoftheweb.salvo;
 
+import com.codeoftheweb.salvo.FirebaseRepositories.FirebaseGameRepository;
+import com.codeoftheweb.salvo.firebaseUtilities.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +50,8 @@ public class SalvoController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private GameService gameService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
@@ -174,8 +176,9 @@ public class SalvoController {
             
             GamePlayer gamePlayer = new GamePlayer(game,player);
 
-            gameRepository.save(game);
+            gameService.saveToBoth(game);
             gamePlayerRepository.save(gamePlayer);
+
 
             for (int i = 0; i < gameData.size(); i++) {
                 List<String> sublist = gameData.get(i);
@@ -350,31 +353,6 @@ public class SalvoController {
 
 
 
-
-/*
-    @PostMapping("/games")
-    public ResponseEntity<Object> createGame(@RequestParam Long player) {
-        try {
-            LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd --- HH:mm:ss");
-            String gameCreated = now.format(formatter);
-            Player user = playerRepository.findById(player).orElse(null);
-            if (user == null) {
-                return ResponseEntity.notFound().build();
-            }
-            Game game = new Game(gameCreated);
-            gameRepository.save(game);
-            GamePlayer gamePlayer = new GamePlayer(game, user);
-            gamePlayerRepository.save(gamePlayer);
-
-
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(Long.toString(game.getGameId()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create game.");
-        }
-    }
-*/
 
     @GetMapping("/games")
     public List<Object> getGames() {

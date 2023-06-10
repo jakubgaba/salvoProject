@@ -3,7 +3,9 @@ package com.codeoftheweb.salvo;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -73,6 +75,17 @@ public class GamePlayer {
 
     public void setSalvos(Set<Salvo> salvos) {
         this.salvos = salvos;
+    }
+
+
+    public Map<String, Object> toFirebaseObject() {
+        Map<String, Object> firebaseObject = new HashMap<>();
+
+        firebaseObject.put("gamePlayerId", this.gamePlayerId);
+        firebaseObject.put("gameId", this.games.getGameId());
+        firebaseObject.put("playerId", this.players.getUserId());
+        firebaseObject.put("playerName", this.players.getUserName());
+        return firebaseObject;
     }
 
 
