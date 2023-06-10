@@ -80,7 +80,6 @@ public class GamePlayer {
 
     public Map<String, Object> toFirebaseObject() {
         Map<String, Object> firebaseObject = new HashMap<>();
-
         firebaseObject.put("gamePlayerId", this.gamePlayerId);
         firebaseObject.put("gameId", this.games.getGameId());
         firebaseObject.put("playerId", this.players.getUserId());

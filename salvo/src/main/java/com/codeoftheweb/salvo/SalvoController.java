@@ -1,7 +1,7 @@
 package com.codeoftheweb.salvo;
 
 import com.codeoftheweb.salvo.FirebaseRepositories.FirebaseGameRepository;
-import com.codeoftheweb.salvo.firebaseUtilities.GameService;
+import com.codeoftheweb.salvo.firebaseUtilities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,8 +50,22 @@ public class SalvoController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @Autowired
     private GameService gameService;
+    @Autowired
+    private GamePlayerService gamePlayerService;
+    @Autowired
+    private PlayerService playerService;
+    @Autowired
+    private SalvoService salvoService;
+    @Autowired
+    private ScoreService scoreService;
+    @Autowired
+    private ShipService shipService;
+
+    @Autowired
+    private FirebaseService firebaseService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
@@ -84,7 +98,7 @@ public class SalvoController {
         if (authentication.getPrincipal().equals("anonymousUser")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.singletonMap("message", "User is not logged in"));
         }
-        if (authentication != null && authentication.isAuthenticated()) {
+        if (authentication.isAuthenticated()) {
             SecurityContextHolder.clearContext();
             HttpSession session = request.getSession(false);
             if (session != null) {
@@ -113,7 +127,6 @@ public class SalvoController {
 
             Game game = gameRepository.findById(gameId).orElse(null);
             Player player = playerRepository.findById(playerId).orElse(null);
-
             GamePlayer gamePlayer = new GamePlayer(game,player);
 
 
@@ -178,7 +191,6 @@ public class SalvoController {
 
             gameService.saveToBoth(game);
             gamePlayerRepository.save(gamePlayer);
-
 
             for (int i = 0; i < gameData.size(); i++) {
                 List<String> sublist = gameData.get(i);
@@ -356,8 +368,19 @@ public class SalvoController {
 
     @GetMapping("/games")
     public List<Object> getGames() {
-        return gameRepository.findAll().stream().map(this::getIndividualGameData).collect(Collectors.toList());
+        List<Object> gamesData = gameRepository.findAll().stream()
+                .map(this::getIndividualGameData)
+                .collect(Collectors.toList());
+
+        firebaseService.writeGames(gamesData);
+
+        return gamesData;
     }
+
+    //@GetMapping("/games")
+    //public List<Object> getGames() {
+    //    return gameRepository.findAll().stream().map(this::getIndividualGameData).collect(Collectors.toList());
+    //}
 
     @RequestMapping("/game_view/{GPId}")
     public Map<String, Object> getGamePlayerByIds(@PathVariable Long GPId){
@@ -451,7 +474,10 @@ public class SalvoController {
         Map<String, Object> mapping = new LinkedHashMap<>();
         mapping.put("id", gamePlayerEach.getGamePlayerId());
         mapping.put("players",  getPlayerData(gamePlayerEach.getPlayers()));
-        mapping.put("shipsPlaced", gamePlayerEach.getShips());
+        mapping.put("shipsPlaced", gamePlayerEach.getShips()
+                .stream()
+                .map(ship -> Map.of("shipId", ship.getShipId(), "shipLocation", ship.getShipLocation(), "shipType", ship.getShipType()))
+                .collect(Collectors.toList()));
         return mapping;
     }
 

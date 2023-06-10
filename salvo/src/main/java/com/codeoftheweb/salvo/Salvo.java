@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 //The @Entity annotation is used to define a class as an entity bean.
@@ -24,7 +25,7 @@ public class Salvo {
     //The @ElementCollection annotation is used to define a collection of basic type.
     //In this case, the collection is a map of integers to strings.
     //The targetClass attribute specifies that the collection should be of the String class.
-    @ElementCollection(targetClass= String.class)
+    @ElementCollection(targetClass = String.class)
     private List<String> salvoLocation;
 
     private int roundNumber;
@@ -33,16 +34,17 @@ public class Salvo {
     //In this case, the Salvo entity has a many-to-one relationship with the GamePlayer entity.
     //The @JoinColumn annotation is used to define the foreign key column for the relationship.
     @ManyToOne
-    @JoinColumn(name="gamePlaySalvo")
+    @JoinColumn(name = "gamePlaySalvo")
     private GamePlayer gamePlayerSalvo;
 
     //default constructor
-    public Salvo(){
+    public Salvo() {
     }
+
     //constructor with parameters to define a gamePlayerSalvo and a salvoLocation
-    public Salvo(GamePlayer gamePlayerSalvo, List<String> salvoLocation,  int roundNumber){
-        this.gamePlayerSalvo=gamePlayerSalvo;
-        this.salvoLocation=salvoLocation;
+    public Salvo(GamePlayer gamePlayerSalvo, List<String> salvoLocation, int roundNumber) {
+        this.gamePlayerSalvo = gamePlayerSalvo;
+        this.salvoLocation = salvoLocation;
         this.roundNumber = roundNumber;
     }
 
@@ -84,14 +86,11 @@ public class Salvo {
 
     public Map<String, Object> toFirebaseObject() {
         Map<String, Object> firebaseObject = new HashMap<>();
-
         firebaseObject.put("salvoId", this.salvoId);
         firebaseObject.put("salvoLocation", this.salvoLocation);
         firebaseObject.put("roundNumber", this.roundNumber);
-
         return firebaseObject;
     }
-
     @Override
     public String toString() {
         return "Salvo{" +

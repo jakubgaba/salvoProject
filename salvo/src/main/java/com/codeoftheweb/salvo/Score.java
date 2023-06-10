@@ -81,11 +81,8 @@ public class Score {
 
         firebaseObject.put("scoreId", this.scoreId);
         firebaseObject.put("score", this.Score);
-        // If you want to include game and player's id for each score,
-        // uncomment the following lines
-        // firebaseObject.put("gameId", this.gameScore.getGameId());
-        // firebaseObject.put("playerId", this.playerScore.getPlayerId());
-        // You might want to convert the finishDate to a String for easier handling
+        firebaseObject.put("gameId", this.gameScore.getGameId());
+
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate;
         if (finishDate != null) {

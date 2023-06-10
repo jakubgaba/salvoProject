@@ -1,5 +1,6 @@
 package com.codeoftheweb.salvo.utilities;
 
+import com.google.firebase.database.FirebaseDatabase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -34,4 +35,6 @@ public class FirebaseInitializer {
             throw new RuntimeException(e);
         }
     }
+
+
 }
