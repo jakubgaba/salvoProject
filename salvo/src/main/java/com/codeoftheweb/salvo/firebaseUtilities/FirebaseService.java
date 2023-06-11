@@ -14,11 +14,12 @@ public class FirebaseService {
 
     private final FirebaseDatabase firebaseDatabase;
     private final DatabaseReference gamesRef;
-
+    private final DatabaseReference gameViewRef;
     @Autowired
     public FirebaseService(FirebaseApp app) {
         this.firebaseDatabase = FirebaseDatabase.getInstance(app);
         this.gamesRef = firebaseDatabase.getReference("gamesSheet");
+        this.gameViewRef = firebaseDatabase.getReference("gameViewSheet");
     }
 
     public FirebaseDatabase getFirebaseDatabase() {
@@ -30,4 +31,10 @@ public class FirebaseService {
             gamesRef.push().setValueAsync(game);
         }
     }
+    public void writeGameView(Long GPId, List<Object> games) {
+        for (Object game : games) {
+            gameViewRef.child(GPId.toString()).setValueAsync(game);
+        }
+    }
+
 }

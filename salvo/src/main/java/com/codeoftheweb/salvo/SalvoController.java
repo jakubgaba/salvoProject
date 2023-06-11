@@ -327,7 +327,6 @@ public class SalvoController {
     ResponseEntity<Object> joinGame(@PathVariable Long gameId, @RequestBody Map<String, Long> requestBody) {
         try {
             // Get the current user
-
             Long playerId = requestBody.get("playerId");
             Player player = playerRepository.findById(playerId).orElse(null);
             if (player == null) {
@@ -371,9 +370,7 @@ public class SalvoController {
         List<Object> gamesData = gameRepository.findAll().stream()
                 .map(this::getIndividualGameData)
                 .collect(Collectors.toList());
-
         firebaseService.writeGames(gamesData);
-
         return gamesData;
     }
 
@@ -384,7 +381,11 @@ public class SalvoController {
 
     @RequestMapping("/game_view/{GPId}")
     public Map<String, Object> getGamePlayerByIds(@PathVariable Long GPId){
-        return getGameViewData(GPId);
+        Map<String, Object> gameViewData = getGameViewData(GPId);
+        List<Object> gameDataList = new ArrayList<>();
+        gameDataList.add(gameViewData);
+        firebaseService.writeGameView(GPId, gameDataList);
+        return gameViewData;
     }
 
 
@@ -424,7 +425,7 @@ public class SalvoController {
                 .flatMap(salvo -> salvo.getSalvoLocation().stream())
                 .collect(Collectors.toList());
         oneGamePlayer.put("salvoes", allSalvoLocations);
-        oneGamePlayer.put("round", salvos.stream().map(Salvo::getRoundNumber));
+        oneGamePlayer.put("round", salvos.stream().map(Salvo::getRoundNumber).collect(Collectors.toList()));
         return oneGamePlayer;
     }
 
@@ -439,9 +440,9 @@ public class SalvoController {
         Map<String, Object> mapping = new LinkedHashMap<>();
         mapping.put("Id", gamePlayer.getPlayers().getUserId());
         mapping.put("Player", gamePlayer.getPlayers().getUserName());
-        mapping.put("Score", gamePlayer.getPlayers().getScoresPlayer().stream().map(Score::getScore));
+        mapping.put("Score", gamePlayer.getPlayers().getScoresPlayer().stream().map(Score::getScore).collect(Collectors.toList()));
         if(gamePlayer.getPlayers().getUserId() != GPId){
-            mapping.put("enemySalvoes", gamePlayer.getSalvos().stream().flatMap(salvo -> salvo.getSalvoLocation().stream()));
+            mapping.put("enemySalvoes", gamePlayer.getSalvos().stream().flatMap(salvo -> salvo.getSalvoLocation().stream()).collect(Collectors.toList()));
         }
         return mapping;
     }
